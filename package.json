@@ -1,0 +1,36 @@
+{
+  "name": "vmlab",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Lienzo visual para gestionar laboratorios locales de VirtualBox y Docker",
+  "author": "RvMpElsTiltsKiN",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "icons": "node scripts/generate-icons.mjs",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "dist:win": "npm run icons && tauri build",
+    "test:core": "cargo test --manifest-path crates/vmlab-core/Cargo.toml"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.1.0",
+    "@xyflow/react": "^12.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.6.0",
+    "vite": "^6.0.0"
+  }
+}

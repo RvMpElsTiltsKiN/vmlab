@@ -1,0 +1,25 @@
+# Dependencias y compilación
+node_modules/
+dist/
+target/
+src-tauri/target/
+src-tauri/gen/
+crates/vmlab-core/target/
+
+# Se COMMITEAN: package-lock.json y Cargo.lock (reproducen las mismas versiones en CI)
+
+# Entorno y secretos
+.env
+.env.*
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Archivos generados o temporales
+*.log
+*.zip
+*.tmp

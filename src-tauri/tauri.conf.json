@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "VMLab",
+  "version": "0.1.0",
+  "identifier": "dev.vmlab.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "VMLab",
+        "width": 1320,
+        "height": 820,
+        "minWidth": 960,
+        "minHeight": 600,
+        "decorations": false,
+        "center": true,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "publisher": "VMLab",
+    "copyright": "© 2026 VMLab",
+    "category": "DeveloperTool",
+    "shortDescription": "Lienzo visual para laboratorios de VirtualBox y Docker",
+    "longDescription": "VMLab permite arrastrar máquinas virtuales de VirtualBox y contenedores Docker a un lienzo, conectarlas para definir redes locales y gestionarlas con un clic.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "nsis": {
+        "installMode": "both",
+        "installerIcon": "icons/icon.ico",
+        "displayLanguageSelector": true,
+        "languages": ["Spanish", "English"],
+        "startMenuFolder": "VMLab"
+      },
+      "wix": {
+        "language": ["es-ES", "en-US"]
+      }
+    }
+  }
+}

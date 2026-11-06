@@ -1,0 +1,352 @@
+==============================================================================
+  VMLab · Guía de usuario
+==============================================================================
+
+VMLab es un lienzo donde dibujas tu laboratorio: arrastras tus máquinas
+virtuales de VirtualBox y tus contenedores de Docker, las unes con cables para
+que formen una red, y las enciendes o apagas con un clic. Se acabó entrar a la
+configuración de VirtualBox adaptador por adaptador o escribir ficheros de red
+a mano dentro de cada máquina.
+
+Esta guía te lleva de cero a tener dos máquinas hablándose entre sí.
+
+
+------------------------------------------------------------------------------
+  1. ANTES DE EMPEZAR
+------------------------------------------------------------------------------
+
+Necesitas tener instalado (VMLab no los incluye):
+
+  · VirtualBox, si vas a usar máquinas virtuales.
+  · Docker Desktop, si vas a usar contenedores.
+
+Puedes usar solo uno de los dos. Al abrir VMLab, arriba a la izquierda verás
+dos etiquetas, "VirtualBox" y "Docker":
+
+  Verde .... encontrado y funcionando.
+  Rojo ..... no está instalado, o (en Docker) está instalado pero apagado.
+
+Un consejo: para configurar la red dentro de una máquina Linux sin abrir su
+ventana, esa máquina necesita las "Guest Additions" de VirtualBox. Más abajo
+tienes cómo instalarlas con ayuda de VMLab (apartado 6).
+
+
+------------------------------------------------------------------------------
+  2. UN VISTAZO A LA VENTANA
+------------------------------------------------------------------------------
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ VMLab  [Aplicar red] [Iniciar todo] [Detener todo] [Bloquear lienzo] │  ← barra superior
+  ├────────────┬─────────────────────────────────────┬───────────────────┤
+  │ PANEL      │                                     │ PANEL             │
+  │ IZQUIERDO  │            LIENZO                   │ DERECHO           │
+  │            │       (aquí dibujas)                │                   │
+  │ Tus VMs y  │                                     │ Detalles de lo    │
+  │ contene-   │                                     │ que seleccionas,  │
+  │ dores      │                                     │ o resumen de redes│
+  └────────────┴─────────────────────────────────────┴───────────────────┘
+
+  · Barra superior: acciones generales, el botón de tema claro/oscuro (sol y
+    luna) y los controles de la ventana.
+  · Panel izquierdo: todo lo que VMLab ha encontrado en tu equipo.
+  · Lienzo: tu laboratorio.
+  · Panel derecho: si no tienes nada seleccionado, muestra tus redes. Si
+    haces clic en una máquina, muestra sus opciones.
+
+
+------------------------------------------------------------------------------
+  3. TU PRIMER LABORATORIO, PASO A PASO
+------------------------------------------------------------------------------
+
+Ejemplo: dos máquinas virtuales que se ven entre sí.
+
+  PASO 1 · Añade las máquinas al lienzo
+    En el panel izquierdo, bajo "Máquinas virtuales", arrastra dos VMs hasta el
+    lienzo (o haz doble clic en cada una). Si pulsas el botón de refrescar
+    (flechas circulares, junto a "Herramientas") VMLab vuelve a buscar.
+
+  PASO 2 · Únelas con un cable
+    Pasa el ratón por encima de un nodo: aparecen puntos en sus cuatro lados.
+    Arrastra desde uno de esos puntos hasta el otro nodo. Ya hay un cable.
+    Las redes no tienen dirección: da igual desde qué lado y en qué sentido.
+    Todos los nodos unidos entre sí forman UNA red.
+
+  PASO 3 · Elige cómo se conectan (opcional)
+    Haz clic en una VM. En el panel derecho, en "Red · adaptador", verás que
+    por defecto usa "Red interna (VMLab)", que es justo lo que necesitas para
+    este ejemplo. Los demás modos están explicados en el apartado 5.
+
+  PASO 4 · Apaga las VMs y pulsa "Aplicar red"
+    VirtualBox solo deja cambiar los adaptadores con la VM apagada. Pulsa
+    "Aplicar red" en la barra superior. VMLab crea la red y la asigna.
+    Al terminar verás un aviso, y en el panel derecho (sin nada seleccionado)
+    el apartado "Última aplicación" con el resultado y los posibles errores.
+
+  PASO 5 · Enciende y comprueba
+    Pulsa "Iniciar todo" (o el botón ▶ de cada nodo). Cuando las dos máquinas
+    tienen IP en la misma red, el cable se pone VERDE y animado.
+    Si sigue rojo, mira el apartado 8: casi siempre es una de cuatro causas.
+
+
+------------------------------------------------------------------------------
+  4. EL LIENZO
+------------------------------------------------------------------------------
+
+Cada máquina es una tarjeta con su nombre, su tipo (VirtualBox o Docker), su
+estado y dos botones: ▶/■ (iniciar o detener) y ↻ (reiniciar).
+
+Estados que verás:
+
+  En ejecución ..... encendida (punto verde que late).
+  Detenida ......... apagada.
+  Pausada .......... en pausa.
+  Sin crear ........ contenedor que todavía no existe: se crea la primera vez
+                     que lo inicias.
+  Sin conexión ..... VMLab no puede hablar con VirtualBox o con Docker.
+
+Los cables:
+
+  Verde y animado .. las dos máquinas están encendidas y tienen IP en la misma
+                     red. Comunicación real.
+  Rojo ............. todavía no hay enlace (apagadas, sin IP, adaptador sin
+                     conectar o red sin aplicar).
+
+Otras cosas útiles:
+
+  · Mover: arrastra la tarjeta. Se alinea a una cuadrícula.
+  · Borrar un nodo o un cable: selecciónalo y pulsa Supr (o Retroceso).
+    Quitar un nodo del lienzo NO borra la máquina ni el contenedor.
+  · Devolver un nodo al panel: arrástralo hasta el panel izquierdo; aparece
+    "Suelta aquí para devolverla al panel".
+  · Zoom y movimiento: rueda del ratón y arrastrar el fondo. Abajo a la
+    derecha tienes un minimapa, y botones de zoom abajo a la izquierda.
+  · "Bloquear lienzo": congela el zoom y el desplazamiento para que la vista
+    no se mueva mientras arrastras nodos. Los nodos se siguen moviendo. VMLab
+    recuerda si lo dejaste bloqueado.
+  · Tema claro/oscuro: el botón del sol o la luna en la barra superior.
+  · Tu lienzo se guarda solo. Al volver a abrir VMLab lo encuentras como lo
+    dejaste.
+
+
+------------------------------------------------------------------------------
+  5. EL PANEL DERECHO
+------------------------------------------------------------------------------
+
+SIN NADA SELECCIONADO: muestra tus redes. Cada grupo de nodos unidos aparece
+como "Red 1", "Red 2"… con sus miembros y un indicador:
+
+  Comunicación detectada ... todo el grupo se ve entre sí.
+  Sin comunicación ......... con el motivo cuando se conoce.
+
+También avisa si una red mezcla VirtualBox y Docker (ver límites, apartado 9)
+o si alguna VM tiene su adaptador fuera de la red interna.
+
+CON UNA MÁQUINA SELECCIONADA:
+
+  · Nombre en el lienzo: puedes cambiarlo (solo afecta a VMLab).
+  · Botones de energía:
+      Iniciar ................ arranca sin ventana (en segundo plano).
+      Iniciar con ventana .... (VMs) arranca mostrando la consola.
+      Detener ................ apagado ordenado.
+      Reiniciar, Pausar / Reanudar.
+      Forzar apagado ......... como quitarle el enchufe. Úsalo si no responde.
+  · Contenedores Docker: además puedes cambiar la imagen.
+
+Modo de red de una VM ("Red · adaptador N"):
+
+  Eliges el adaptador (NIC 1 a 4; por defecto el 2) y su modo:
+
+  Red interna (VMLab) ... Red privada entre las VMs unidas por cables. Sin
+                          internet. VMLab crea la red y un servidor DHCP
+                          integrado para que las máquinas reciban IP solas.
+                          Es el modo del ejemplo del apartado 3.
+  NAT ................... La VM sale a internet. No se ve con otras VMs.
+  Adaptador puente ...... La VM aparece como un equipo más de tu red física,
+                          con su propia IP. Escribe el nombre de la interfaz
+                          de tu PC (por ejemplo "Wi-Fi" o "Ethernet").
+  Solo anfitrión ........ Red privada solo entre la VM y tu PC. Escribe el
+                          nombre del adaptador (por ejemplo vboxnet0).
+  Red NAT ............... Varias VMs comparten una red con salida a internet.
+                          Escribe el nombre de esa red NAT.
+  Sin conectar .......... El adaptador queda desconectado.
+
+  Importante:
+  · El adaptador 1 suele ser el NAT que usa la VM para salir a internet.
+    VMLab no lo toca salvo que lo elijas tú. Por eso el 2 es el valor
+    habitual para la red del laboratorio.
+  · Si una VM tiene cables pero su modo NO es "Red interna", el cable no
+    entra en la red del lienzo y VMLab te lo avisa.
+  · Los cambios se aplican con "Aplicar red" y con la VM apagada.
+
+Configurar la red dentro de una VM Linux ("Dentro de la VM · Linux"):
+
+  Sirve para escribir la configuración de red dentro de una VM Linux sin abrir
+  su consola. Necesitas: la VM ENCENDIDA, las Guest Additions instaladas y un
+  usuario de la VM que sea root o tenga sudo sin contraseña.
+
+    1. Escribe el usuario y la contraseña de la VM. La contraseña solo se usa
+       durante la operación: no se guarda en ningún sitio.
+    2. Pulsa "Detectar sistema de red". VMLab mira qué sistema usa esa máquina
+       (Netplan, NetworkManager, systemd-networkd, ifupdown, wicked, dhcpcd,
+       ConnMan o network-scripts) y qué interfaces tiene. Te enseña la ruta
+       exacta del fichero que escribiría.
+    3. Deja "Sistema" en "Automático (recomendado)" salvo que quieras forzar
+       uno, y elige la "Interfaz" (por ejemplo la segunda: eth1 o enp0s8).
+    4. Elige el modo de IP:
+         DHCP ............ la máquina pide IP al servidor de la red.
+         Estática ........ escribes IP, prefijo (24 = 255.255.255.0), puerta
+                           de enlace y, si quieres, DNS separados por comas.
+         Servidor DHCP ... la máquina reparte IPs (escribe dhcpd.conf).
+                           Necesita el servidor ISC dhcpd instalado. Desactiva
+                           el DHCP integrado de esa red para no tener dos.
+    5. Pulsa "Escribir configuración". Al acabar verás los ficheros escritos
+       y los avisos.
+
+  VMLab limpia la configuración que él mismo escribió en versiones
+  anteriores, para no dejar dos configuraciones activas a la vez.
+
+
+------------------------------------------------------------------------------
+  6. GUEST ADDITIONS (EL "PUENTE" CON LA VM)
+------------------------------------------------------------------------------
+
+Las Guest Additions son un complemento de VirtualBox que se instala dentro de
+la VM. Sin ellas, VMLab no puede escribir la red dentro de la máquina ni leer
+su IP (y por eso el cable no pasaría a verde).
+
+En el panel izquierdo, cada VM muestra una etiqueta:
+
+  "Guest Additions 7.x.x" ........ ya están instaladas.
+  "Instalar Guest Additions" ..... no están; pulsa para prepararlas.
+  "sin datos" .................... VirtualBox no pudo consultar la VM (por
+                                   ejemplo, está bloqueada por su ventana).
+
+Al pulsar "Instalar Guest Additions", VMLab monta el disco de instalación en
+la VM (y la abre si estaba apagada). El último paso lo haces tú dentro de la
+VM; el propio panel te lo indica:
+
+  Windows:  abre la unidad de CD, ejecuta VBoxWindowsAdditions.exe como
+            administrador y reinicia.
+  Linux:    sudo mount /dev/cdrom /mnt
+            sudo /mnt/VBoxLinuxAdditions.run
+            (si pide compilador, instala build-essential y los headers del
+            kernel).
+
+Cuando termines, pulsa "Ya está instalado · comprobar".
+
+
+------------------------------------------------------------------------------
+  7. CONTENEDORES DOCKER
+------------------------------------------------------------------------------
+
+  · Los contenedores que ya tienes aparecen en "Contenedores".
+  · Para uno nuevo, usa "Nuevo contenedor": escribe un nombre (letras,
+    números, "_", "." o "-") y una imagen (por ejemplo nginx:latest) y pulsa
+    "Añadir al lienzo". El contenedor se crea de verdad la primera vez que lo
+    inicias, y puede tardar si hay que descargar la imagen.
+  · Al aplicar la red, VMLab crea una red de Docker y conecta a ella los
+    contenedores unidos por cables.
+
+Si Docker está instalado pero apagado verás un aviso rojo en "Contenedores"
+con el botón "Iniciar Docker". VMLab abre Docker Desktop en segundo plano y
+espera hasta 3 minutos a que el motor responda (la primera vez puede tardar
+1 o 2). Un detalle que conviene saber: para que Docker Desktop no abra su
+panel, VMLab desactiva en los ajustes de Docker la opción "Abrir Docker
+Dashboard al iniciar". Puedes volver a activarla desde los ajustes de Docker.
+
+"Detalles técnicos" (desplegable bajo el aviso) muestra el error original por
+si necesitas buscarlo o pegarlo en una consulta.
+
+
+------------------------------------------------------------------------------
+  8. SI ALGO NO FUNCIONA
+------------------------------------------------------------------------------
+
+"El cable sigue rojo aunque las dos máquinas están encendidas"
+  Casi siempre es una de estas:
+   1. No has pulsado "Aplicar red" (o lo hiciste con la VM encendida).
+   2. La máquina no tiene IP: en la red interna debería dársela el DHCP de
+      VMLab, pero el sistema de la VM tiene que usar ese adaptador. En muchos
+      Linux de servidor el segundo adaptador viene sin configurar: usa
+      "Dentro de la VM · Linux" para activarlo en DHCP.
+   3. Faltan las Guest Additions: sin ellas VMLab no puede leer la IP.
+   4. El adaptador está en NAT, puente u otro modo distinto de "Red interna".
+  Además, el panel derecho (sin selección) te dice el motivo cuando lo sabe.
+
+"Aplicar red" da error en una VM
+  Apágala del todo (no vale un estado guardado o en pausa) y repite.
+
+"Docker está en rojo"
+  Si Docker Desktop está instalado, pulsa "Iniciar Docker" o ábrelo tú y
+  espera a ver "Engine running". Luego pulsa el botón de refrescar del panel
+  izquierdo. Si Docker Desktop no arranca por sí mismo, suele ser cosa de WSL 2:
+  prueba "wsl --update" en PowerShell y reinicia Docker.
+
+"Detectar sistema de red" falla o dice que no hay Guest Additions
+  Comprueba que la VM está ENCENDIDA, que ya terminó de arrancar, que el
+  usuario y la contraseña son correctos y que el usuario es root o tiene sudo
+  sin contraseña. Si faltan las Guest Additions, instálalas (apartado 6).
+
+"Mi contenedor aparece como 'Sin crear'"
+  Es normal: todavía no existe. Se crea con la imagen indicada la primera vez
+  que pulsas ▶.
+
+"Una VM en pausa aparece como 'En ejecución'"
+  Es una limitación conocida de VirtualBox, que no distingue las VMs en
+  pausa al listar las que están en marcha.
+
+"Windows me avisa de editor desconocido al instalar"
+  El instalador no está firmado digitalmente. Pulsa "Más información" y luego
+  "Ejecutar de todas formas" (solo si lo has descargado de una fuente de
+  confianza).
+
+
+------------------------------------------------------------------------------
+  9. LÍMITES QUE CONVIENE CONOCER
+------------------------------------------------------------------------------
+
+  · Una red que mezcla VMs de VirtualBox y contenedores de Docker se avisa,
+    pero VMLab no las puentea: cada tecnología queda en su propia red.
+  · Las VMs se cambian de adaptador solo estando apagadas.
+  · "Iniciar" arranca las VMs sin ventana. Para ver la consola, usa "Iniciar
+    con ventana" en el panel derecho.
+  · Quitar una máquina del lienzo nunca la borra de VirtualBox ni de Docker.
+
+
+------------------------------------------------------------------------------
+  10. TUS DATOS Y TU PRIVACIDAD
+------------------------------------------------------------------------------
+
+  · El lienzo (nodos, cables, nombres, ajustes de red) se guarda en tu equipo,
+    en la carpeta de datos de la aplicación. No se envía a ningún sitio.
+  · Las contraseñas de las VMs no se guardan nunca. Se piden cada vez.
+  · VMLab ejecuta VBoxManage y docker en tu equipo, sin intérprete de
+    comandos intermedio, y valida los nombres que escribes antes de usarlos.
+
+
+------------------------------------------------------------------------------
+  11. VENÍAS DE LABLAB
+------------------------------------------------------------------------------
+
+VMLab es el nuevo nombre de LabLab. Al abrirlo por primera vez, copia tu
+lienzo y tus preferencias de la carpeta antigua, sin borrar nada. Al pulsar
+"Aplicar red", las máquinas pasan de las redes antiguas (lablab-…) a las
+nuevas (vmlab-…) y VMLab elimina las antiguas cuando quedan vacías.
+
+
+------------------------------------------------------------------------------
+  CHULETA RÁPIDA
+------------------------------------------------------------------------------
+
+  Añadir máquina ........ arrastrar desde el panel izquierdo o doble clic
+  Conectar .............. arrastrar de un punto de un nodo a otro nodo
+  Aplicar la red ........ botón "Aplicar red" (con las VMs APAGADAS)
+  Encender / apagar ..... ▶ ■ en cada nodo, o "Iniciar todo" / "Detener todo"
+  Borrar nodo o cable ... seleccionar + Supr
+  Devolver al panel ..... arrastrar el nodo hasta el panel izquierdo
+  Cable verde ........... las dos máquinas se ven en la red
+  Cable rojo ............ apagadas, sin IP, sin aplicar o en otro modo de red
+
+==============================================================================
+  VMLab · MIT License · © 2026 RvMpElsTiltsKiN
+==============================================================================
