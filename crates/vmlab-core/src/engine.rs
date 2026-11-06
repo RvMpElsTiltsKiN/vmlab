@@ -116,6 +116,11 @@ pub async fn docker_start(tools: &Tools, wait_secs: u64) -> Result<DockerStartIn
     docker_desktop::start(tools, wait_secs).await
 }
 
+/// Detiene Docker Desktop al cerrar la app (solo si VMLab lo había arrancado).
+pub async fn docker_stop(tools: &Tools) -> Result<()> {
+    docker_desktop::stop(tools).await
+}
+
 /// Aplica la topología del lienzo al sistema. Nunca aborta a la mitad: acumula errores por nodo.
 pub async fn apply(tools: &Tools, t: &Topology) -> ApplyReport {
     let plan = topology::plan(t);

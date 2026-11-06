@@ -10,7 +10,7 @@
 //! rechaza y el backend se cae al arrancar.
 use crate::error::{CoreError, Result};
 use crate::model::DockerStartInfo;
-use crate::runner::run_ok;
+use crate::runner::{run, run_ok};
 use crate::tools::Tools;
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
@@ -121,6 +121,66 @@ pub async fn start(tools: &Tools, wait_secs: u64) -> Result<DockerStartInfo> {
             "Docker Desktop se lanzó, pero el motor no respondió. Abre Docker Desktop para ver el error o revisa WSL.".into()
         },
     })
+}
+
+/// Detiene Docker Desktop y su VM para liberar la memoria.
+///
+/// Pensado para el cierre de la aplicación: si el motor ya está parado no hace
+/// nada, y el timeout evita que VMLab se quede colgado esperando.
+pub async fn stop(tools: &Tools) -> Result<()> {
+    if !engine_ready(tools).await && !desktop_running() {
+        return Ok(());
+    }
+    let bin = tools.docker()?;
+    let stopped = run_ok(bin, &["desktop", "stop"], Duration::from_secs(45)).await;
+
+    // Docker tarda unos segundos en cerrar el backend; después su VM de WSL
+    // sigue ocupando memoria aunque ya no haya distros «en marcha».
+    let deadline = Instant::now() + Duration::from_secs(20);
+    while desktop_running() && Instant::now() < deadline {
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+    release_wsl_memory().await;
+
+    stopped.map(|_| ())
+}
+
+/// Libera la VM de WSL que Docker deja viva al parar el motor.
+///
+/// Solo hace `wsl --shutdown` si no hay ninguna otra distro en marcha; si el
+/// usuario tiene Ubuntu abierto, se limita a terminar `docker-desktop`.
+async fn release_wsl_memory() {
+    #[cfg(windows)]
+    {
+        let Some(wsl) = wsl_exe() else { return };
+        let Ok(out) = run(&wsl, &["--list", "--running", "--quiet"], Duration::from_secs(15)).await else {
+            return;
+        };
+        // wsl.exe devuelve UTF-16LE: al quitar los NUL queda texto ASCII legible.
+        let listing = out.stdout.replace('\0', "");
+        let others = listing
+            .lines()
+            .map(str::trim)
+            .filter(|name| !name.is_empty() && *name != "docker-desktop")
+            .count();
+
+        if others == 0 {
+            let _ = run_ok(&wsl, &["--shutdown"], Duration::from_secs(30)).await;
+        } else {
+            let _ = run_ok(&wsl, &["--terminate", "docker-desktop"], Duration::from_secs(30)).await;
+        }
+    }
+}
+
+#[cfg(windows)]
+fn wsl_exe() -> Option<PathBuf> {
+    if let Some(root) = std::env::var_os("SystemRoot") {
+        let path = PathBuf::from(root).join("System32").join("wsl.exe");
+        if path.is_file() {
+            return Some(path);
+        }
+    }
+    std::env::split_paths(&std::env::var_os("PATH")?).map(|dir| dir.join("wsl.exe")).find(|p| p.is_file())
 }
 
 fn io_err(e: std::io::Error) -> CoreError {

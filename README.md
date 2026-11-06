@@ -86,6 +86,20 @@ Docker Desktop no ofrece un comando oficial para arrancar solo el motor, a difer
 
 El botón **Iniciar Docker** solo aparece cuando el motor no responde. Si Docker Desktop ya estaba abierto, no se vuelve a lanzar: únicamente se espera al motor. El paso 1 deja desactivada la opción «Abrir Docker Dashboard al iniciar» de Docker Desktop; puedes volver a activarla desde los ajustes de Docker.
 
+Al cerrar VMLab, si fue la app quien arrancó Docker Desktop, ejecuta `docker desktop stop` y, cuando Docker ha cerrado, libera también la VM de WSL que este deja viva (`wsl --shutdown` solo si no hay otras distros en marcha; si las hay, se limita a terminar `docker-desktop`). Si Docker ya estaba en marcha antes de abrir VMLab, **no se toca**.
+
+Para que la VM de Docker/WSL no pueda crecer hasta la mitad de la RAM del equipo, crea `%USERPROFILE%\.wslconfig`:
+
+```ini
+[wsl2]
+memory=8GB
+swap=2GB
+autoMemoryReclaim=gradual
+sparseVhd=true
+```
+
+El script `scripts/mem-watch.ps1` registra la RAM en uso y los procesos que más consumen, útil para comprobar qué crece al abrir o cerrar la app.
+
 ### Configuración dentro de la VM (Guest Additions)
 
 Sin abrir la consola, VMLab puede escribir la configuración de red de una VM Linux con `VBoxManage guestcontrol`:

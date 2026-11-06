@@ -97,6 +97,10 @@ pub async fn docker_start(state: State<'_, AppState>) -> Result<DockerStartInfo,
         tools = Tools::detect();
     }
     let info = engine::docker_start(&tools, 180).await.map_err(s)?;
+    if info.launched {
+        // Docker Desktop no estaba en marcha: VMLab pasa a ser responsable de pararlo.
+        state.own_docker();
+    }
     if info.engine_ready {
         // Por si el CLI no estaba en el PATH y Docker Desktop acaba de instalarlo/registrarlo.
         *state.tools.write().await = Tools::detect();
