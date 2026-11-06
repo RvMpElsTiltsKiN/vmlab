@@ -62,13 +62,6 @@ Cada **grupo de nodos conectados** es una red local. Al pulsar **Aplicar red**:
 | Docker | Crea una red *bridge* `vmlab-xxxxxxxx`, conecta los contenedores y los desconecta de otras redes `vmlab-*` y de las antiguas `lablab-*`. Borra las redes vacías de ambos prefijos. |
 | Nodo sin conexiones | VirtualBox: red interna propia o adaptador desactivado. Docker: sin redes `vmlab-*`. |
 
-### Migración desde LabLab
-
-El renombrado completo cambió el identificador de la app (`dev.lablab.app` → `dev.vmlab.app`), el crate (`lablab-core` → `vmlab-core`), las claves locales (`lablab.*` → `vmlab.*`), las redes (`lablab-*` → `vmlab-*`) y los marcadores de configuración de invitados (`LABLAB_*` → `VMLAB_*`).
-
-Al arrancar por primera vez, `src-tauri/src/migrate.rs` copia el espacio de trabajo y el `localStorage` de la carpeta antigua a la nueva sin sobrescribir nada. El frontend también migra `lablab.theme`, `lablab.canvasLocked` y `lablab.workspace` si aún existen.
-
-Las redes no se pueden renombrar en Docker ni en VirtualBox: al pulsar **Aplicar red**, los contenedores se conectan a `vmlab-*` y se desconectan de `lablab-*`, y las redes antiguas vacías se eliminan. En las VM, el script de configuración borra los ficheros y bloques de la versión anterior antes de escribir los nuevos, para no dejar dos configuraciones activas.
 
 ### Modo de red por VM
 
